@@ -1,6 +1,12 @@
+package NFA;
+
+import NFA.transition.Transition;
+
 import java.util.ArrayList;
 
 public class Node {
+
+    private static int count = 0;
 
     private String name;
     private NodeKind kind;
@@ -9,6 +15,13 @@ public class Node {
 
     public Node(String name, NodeKind kind) {
         this.name = name;
+        this.kind = kind;
+        transitions = new ArrayList<>();
+    }
+
+    public Node(NodeKind kind) {
+        this.name = "node " + count;
+        count++;
         this.kind = kind;
         transitions = new ArrayList<>();
     }

@@ -1,3 +1,7 @@
+package NFA;
+
+import NFA.transition.Transition;
+
 import java.util.ArrayList;
 
 public class NFA {
@@ -9,12 +13,12 @@ public class NFA {
 
     public NFA(String sequence) {
         this.sequence = sequence;
-        this.startNode = new Node("start",NodeKind.first);
-        this.finalNode = new Node("end",NodeKind.terminal);
-        Node tempStart = new Node("tempStart",NodeKind.normal);
-        Node tempEnd = new Node("tempEnd",NodeKind.normal);
+        this.startNode = new Node("start", NodeKind.first);
+        this.finalNode = new Node("end", NodeKind.terminal);
+        Node tempStart = new Node("tempStart", NodeKind.normal);
+        Node tempEnd = new Node("tempEnd", NodeKind.normal);
 
-        //initial starting NFA
+        //initial starting NFA.NFA
         transitions = new ArrayList<>();
         transitions.add(new Transition(startNode,tempStart,new Expression("y")));
         transitions.add(new Transition(tempStart,tempEnd,new Expression(sequence)));
@@ -22,6 +26,7 @@ public class NFA {
 
         for (Transition transition : tempStart.getTransitions()){
             transitions.addAll(transition.simplify());
+            transitions.remove(transition);
         }
 
     }

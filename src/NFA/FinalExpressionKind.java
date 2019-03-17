@@ -1,3 +1,5 @@
+package NFA;
+
 public enum FinalExpressionKind {
     //use y instead of lambda
     a, b, lambda, none;
