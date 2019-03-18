@@ -18,21 +18,17 @@ public class NFA {
         Node tempEnd = new Node("tempEnd", NodeKind.normal);
 
         //initial starting NFA.NFA
-        startNode.addTransition(new Transition(startNode,tempStart,new Expression("y")));
-        tempStart.addTransition(new Transition(tempStart,tempEnd,new Expression(sequence)));
-        tempEnd.addTransition(new Transition(tempEnd,finalNode,new Expression("y")));
+        startNode.addTransition(new Transition(startNode, tempStart, new Expression("y")));
+        tempStart.addTransition(new Transition(tempStart, tempEnd, new Expression(sequence)));
+        tempEnd.addTransition(new Transition(tempEnd, finalNode, new Expression("y")));
 
-        for (Transition transition : tempStart.getTransitions()){
-            transition.simplify();
-        }
+        tempStart.simplify();
 
     }
 
-    public void draw(Node start){
-        if (start == null || start.getTransitions().isEmpty()){
-            return;
-        } else{
-            for (Transition transition : start.getTransitions()){
+    public void draw(Node start) {
+        if (start != null && !start.getTransitions().isEmpty()) {
+            for (Transition transition : start.getTransitions()) {
                 System.out.println(transition);
                 Node end = transition.getEnd();
                 draw(end);

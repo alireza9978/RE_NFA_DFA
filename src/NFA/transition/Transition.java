@@ -2,8 +2,7 @@ package NFA.transition;
 
 import NFA.Expression;
 import NFA.Node;
-
-import java.util.ArrayList;
+import NFA.NodeKind;
 
 
 public class Transition {
@@ -33,24 +32,28 @@ public class Transition {
         return expression;
     }
 
-    public void simplify() {
-        ArrayList<Transition> transitions = new ArrayList<>();
+    public Transition simplify() {
         if (expression.isFinal()) {
-            transitions.add(this);
+            return this;
         } else {
             switch (expression.getOpration()) {
                 case concat: {
-                    //todo complete transition class
+                    return new AndTransition(start, end, expression.getFirstSequencePart(), expression.getSecondSequencePart());
                 }
                 case or: {
-
+                    return new OrTransition(start, end, expression.getFirstSequencePart(), expression.getSecondSequencePart());
                 }
                 case star: {
-
+                    Transition star = new StarTransition(start, end, expression.getFirstSequencePart());
+                    Node tempEnd = new Node(NodeKind.normal);
+                    Expression tempEx = new Expression(expression.getSecondSequencePart());
+                    Transition tempAdd = new Transition(end, tempEnd, tempEx);
+                    end.addTransition(tempAdd);
+                    return star;
                 }
             }
         }
-        //todo add transition to this class
+        return null;
     }
 
     @Override

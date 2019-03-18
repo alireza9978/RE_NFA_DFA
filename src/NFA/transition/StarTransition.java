@@ -4,7 +4,7 @@ import NFA.Expression;
 import NFA.Node;
 import NFA.NodeKind;
 
-public class StarTransition {
+public class StarTransition extends Transition {
 
     public StarTransition(Node start, Node end, String sequence) {
         Node tempLeft = new Node(NodeKind.normal);

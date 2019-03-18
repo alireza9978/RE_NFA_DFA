@@ -20,7 +20,7 @@ public class Node {
     }
 
     public Node(NodeKind kind) {
-        this.name = "node " + count;
+        this.name = "node" + count;
         count++;
         this.kind = kind;
         transitions = new ArrayList<>();
@@ -54,4 +54,19 @@ public class Node {
                 ", kind=" + kind +
                 '}';
     }
+
+    public void simplify() {
+        if (transitions.isEmpty()) {
+            return;
+        }
+        ArrayList<Transition> transitions = new ArrayList<>();
+        ArrayList<Transition> tempArrayList = getTransitions();
+        int size = tempArrayList.size();
+        for (int i = 0; i < size; i++) {
+            Transition transition = tempArrayList.get(i);
+            transitions.add(transition.simplify());
+        }
+        this.transitions = transitions;
+    }
+
 }
