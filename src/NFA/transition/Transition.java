@@ -12,6 +12,9 @@ public class Transition {
     private Node end;
     private Expression expression;
 
+    Transition() {
+    }
+
     public Transition(Node start, Node end, Expression expression) {
         this.start = start;
         this.end = end;
@@ -30,7 +33,7 @@ public class Transition {
         return expression;
     }
 
-    public ArrayList<Transition> simplify() {
+    public void simplify() {
         ArrayList<Transition> transitions = new ArrayList<>();
         if (expression.isFinal()) {
             transitions.add(this);
@@ -47,7 +50,14 @@ public class Transition {
                 }
             }
         }
-        return transitions;
+        //todo add transition to this class
     }
 
+    @Override
+    public String toString() {
+        return "Transition(" +
+                start.getName() +
+                " , " + expression.getSequence() +
+                " ) = " + end.getName();
+    }
 }

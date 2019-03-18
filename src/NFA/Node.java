@@ -46,4 +46,12 @@ public class Node {
     public ArrayList<Transition> getTransitions() {
         return transitions;
     }
+
+    @Override
+    public String toString() {
+        return "Node{" +
+                "name='" + name + '\'' +
+                ", kind=" + kind +
+                '}';
+    }
 }
