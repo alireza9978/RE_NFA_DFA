@@ -14,18 +14,22 @@ public class OrTransition extends Transition{
     private Node bottomRight = new Node(NodeKind.normal);
 
     private ArrayList<Transition> transitions = new ArrayList<>();
+    private ArrayList<Transition> firstTransitions = new ArrayList<>();
 
     public OrTransition(Node start, Node end, String firstSequence, String secondSequence) {
         super(start,end,null);
+
         Expression expression = new Expression("y");
         Transition temp = new Transition(start, topLeft, expression);
         start.addTransition(temp);
         transitions.add(temp);
+        firstTransitions.add(temp);
 
         expression = new Expression("y");
         temp = new Transition(start, bottomLeft, expression);
         start.addTransition(temp);
         transitions.add(temp);
+        firstTransitions.add(temp);
 
         expression = new Expression(firstSequence);
         temp = new Transition(topLeft, topRight, expression);
@@ -49,6 +53,15 @@ public class OrTransition extends Transition{
         transitions.add(temp);
 
     }
+
+    public ArrayList<Transition> getTransitions() {
+        return transitions;
+    }
+
+    public ArrayList<Transition> getFirstStepTransition(){
+        return firstTransitions;
+    }
+
 
     @Override
     public String toString() {

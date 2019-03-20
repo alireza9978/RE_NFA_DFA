@@ -59,14 +59,27 @@ public class Node {
         if (transitions.isEmpty()) {
             return;
         }
+        boolean canReDo = false;
         ArrayList<Transition> transitions = new ArrayList<>();
         ArrayList<Transition> tempArrayList = getTransitions();
         int size = tempArrayList.size();
         for (int i = 0; i < size; i++) {
             Transition transition = tempArrayList.get(i);
-            transitions.add(transition.simplify());
+            ArrayList<Transition> temp = transition.simplify();
+            if (temp != null) {
+                transitions.addAll(temp);
+                canReDo = true;
+            }else{
+                transitions.add(transition);
+            }
         }
         this.transitions = transitions;
+        if (canReDo){
+            simplify();
+        }
+        for (Transition transition : getTransitions()) {
+            transition.getEnd().simplify();
+        }
     }
 
 }

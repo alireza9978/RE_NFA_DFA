@@ -38,12 +38,10 @@ public class Expression {
     private String preParse(String sequence) {
         StringBuilder temp = new StringBuilder();
         for (int i = 0; i < sequence.length(); i++) {
-            if (sequence.charAt(i) == '('){
-                int j = i;
-                while (sequence.charAt(j) != ')')
-                    j++;
+            if (sequence.charAt(i) == '(') {
+                i += getEndOfParantes(sequence, i);
                 temp.append("p");
-            }else{
+            } else {
                 temp.append(sequence.charAt(i));
             }
         }
@@ -55,7 +53,10 @@ public class Expression {
             return new Data(null, null, null);
         } else {
             String tempSequence = preParse(sequence);
-
+            if (tempSequence.length() == 1) {
+                String temp = removeParentheses(sequence);
+                return parseSequence(temp);
+            }
             int i = 0;
             char temp = tempSequence.charAt(i);
             char next = tempSequence.charAt(i + 1);
@@ -68,22 +69,40 @@ public class Expression {
                 }
             } else {
                 if (temp == 'p') {
-                    int j = 1;
-                    while (sequence.charAt(j) != ')')
-                        j++;
-                    String first = sequence.substring(1,j);
-                    char need = sequence.charAt(j+1);
+                    int j = getEndOfParantes(sequence, i);
+                    String first = sequence.substring(1, j);
+                    char need = sequence.charAt(j + 1);
                     if (need == 'a' || need == 'b' || need == '(') {
-                        return new Data(first,sequence.substring(j+1),Opration.concat);
-                    }else {
+                        return new Data(first, sequence.substring(j + 1), Opration.concat);
+                    } else {
                         Opration opration = (next == '|') ? Opration.or : Opration.star;
-                        return new Data(first,sequence.substring(j+2),opration);
+                        return new Data(first, sequence.substring(j + 2), opration);
                     }
                 } else {
                     throw new RuntimeException("ridi ke");
                 }
             }
         }
+    }
+
+    private int getEndOfParantes(String sequence, int i) {
+        int j = i + 1;
+        int count = 1;
+        char tempChar = sequence.charAt(j);
+        while (tempChar != ')' && count == 1) {
+            if (tempChar == '(') {
+                count++;
+            }
+            if (tempChar == '(') {
+                count--;
+            }
+            j++;
+            if (sequence.length() > j)
+                tempChar = sequence.charAt(j);
+            else
+                break;
+        }
+        return j + 1;
     }
 
     public Opration getOpration() {

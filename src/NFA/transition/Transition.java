@@ -4,6 +4,8 @@ import NFA.Expression;
 import NFA.Node;
 import NFA.NodeKind;
 
+import java.util.ArrayList;
+
 
 public class Transition {
 
@@ -32,24 +34,24 @@ public class Transition {
         return expression;
     }
 
-    public Transition simplify() {
+    public ArrayList<Transition> simplify() {
         if (expression.isFinal()) {
-            return this;
+            return null;
         } else {
             switch (expression.getOpration()) {
                 case concat: {
-                    return new AndTransition(start, end, expression.getFirstSequencePart(), expression.getSecondSequencePart());
+                    return (new AndTransition(start, end, expression.getFirstSequencePart(), expression.getSecondSequencePart())).getFirstStepTransition();
                 }
                 case or: {
-                    return new OrTransition(start, end, expression.getFirstSequencePart(), expression.getSecondSequencePart());
+                    return (new OrTransition(start, end, expression.getFirstSequencePart(), expression.getSecondSequencePart())).getFirstStepTransition();
                 }
                 case star: {
-                    Transition star = new StarTransition(start, end, expression.getFirstSequencePart());
+                    StarTransition star = new StarTransition(start, end, expression.getFirstSequencePart());
                     Node tempEnd = new Node(NodeKind.normal);
                     Expression tempEx = new Expression(expression.getSecondSequencePart());
                     Transition tempAdd = new Transition(end, tempEnd, tempEx);
                     end.addTransition(tempAdd);
-                    return star;
+                    return star.getFirstStepTransition();
                 }
             }
         }

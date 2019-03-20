@@ -27,13 +27,30 @@ public class NFA {
     }
 
     public void draw(Node start) {
+//        if (start != null && !start.getTransitions().isEmpty()) {
+//            for (Transition transition : start.getTransitions()) {
+//                System.out.println(transition);
+//                Node end = transition.getEnd();
+//                draw(end);
+//            }
+//        }
         if (start != null && !start.getTransitions().isEmpty()) {
-            for (Transition transition : start.getTransitions()) {
-                System.out.println(transition);
-                Node end = transition.getEnd();
-                draw(end);
-            }
+            ArrayList<Transition> transitions = getAllTransitions(start);
+            for (Transition transition : transitions)
+                System.out.println(transition.toString());
         }
+    }
+
+    private ArrayList<Transition> getAllTransitions(Node node){
+        ArrayList<Transition> transitionArrayList = new ArrayList<>();
+        for (Transition transition :node.getTransitions()){
+            transitionArrayList.add(transition);
+            ArrayList<Transition> t = getAllTransitions(transition.getEnd());
+            for (Transition temp : t)
+                if (!transitionArrayList.contains(temp))
+                    transitionArrayList.add(temp);
+        }
+        return transitionArrayList;
     }
 
     public String getSequence() {
