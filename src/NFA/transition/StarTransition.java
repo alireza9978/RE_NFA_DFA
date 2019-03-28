@@ -35,6 +35,7 @@ public class StarTransition extends Transition {
         temp = new Transition(start, end, expression);
         start.addTransition(temp);
         transitions.add(temp);
+        firstTransitions.add(temp);
 
         expression = new Expression("y");
         temp = new Transition(end, start, expression);
@@ -47,7 +48,7 @@ public class StarTransition extends Transition {
         return transitions;
     }
 
-    public ArrayList<Transition> getFirstStepTransition(){
+    public ArrayList<Transition> getFirstStepTransition() {
         return firstTransitions;
     }
 

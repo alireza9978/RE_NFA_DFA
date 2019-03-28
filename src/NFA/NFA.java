@@ -1,10 +1,7 @@
 package NFA;
 
 import NFA.transition.Transition;
-import guru.nidi.graphviz.attribute.Color;
-import guru.nidi.graphviz.attribute.RankDir;
-import guru.nidi.graphviz.attribute.Records;
-import guru.nidi.graphviz.attribute.Style;
+import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.model.Graph;
@@ -12,6 +9,7 @@ import guru.nidi.graphviz.model.LinkSource;
 import guru.nidi.graphviz.model.LinkTarget;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -63,9 +61,9 @@ public class NFA {
 
             guru.nidi.graphviz.model.Node graphStart = node(start.getName()).with(Records.of(rec("start", startNode.getName()),
                     turn(rec("tag0", start.getTransitions().get(0).getExpression().getSequence()))), Style.FILLED, Color.hsv(.7, .3, 1.0));
-//            g.with(getLinks(start, "tag0", graphStart));
+//            g.with(getLinksV2(start, "tag0", graphStart));
             Graph g = graph("tempGraph").directed()
-                    .graphAttr().with(RankDir.LEFT_TO_RIGHT).with(Objects.requireNonNull(getLinks(start, "tag0", graphStart, new ArrayList<>())));
+                    .graphAttr().with(RankDir.LEFT_TO_RIGHT).with(Objects.requireNonNull(getLinksV2(start, "tag0", graphStart, new ArrayList<>())));
 
             Graphviz.fromGraph(g).width(5000).render(Format.PNG).toFile(new File("example/" + fileName + ".png"));
         } catch (Exception e) {
@@ -73,9 +71,9 @@ public class NFA {
         }
     }
 
-    private ArrayList<LinkSource> getLinks(Node startNode, String inTag, guru.nidi.graphviz.model.Node graphStart, ArrayList<Node> seen) {
+    private ArrayList<LinkSource> getLinksV2(Node startNode, String inTag, guru.nidi.graphviz.model.Node graphStart, ArrayList<Node> seen) {
         ArrayList<LinkSource> targets = new ArrayList<>();
-        if (seen.contains(startNode)){
+        if (seen.contains(startNode)) {
             return null;
         }
         try {
@@ -85,15 +83,15 @@ public class NFA {
             for (Transition transition : startNode.getTransitions()) {
                 Node endNode = transition.getEnd();
                 guru.nidi.graphviz.model.Node graphEnd;
-                if (endNode.getKind() == NodeKind.terminal){
-                    graphEnd = node(endNode.getName()).with(Records.of(makeNodes(endNode, inTag)),Style.SOLID, Color.rgb("10d020"));
-                }else {
+                if (endNode.getKind() == NodeKind.terminal) {
+                    graphEnd = node(endNode.getName()).with(Records.of(makeNodes(endNode, inTag)), Style.SOLID, Color.rgb("10d020"));
+                } else {
                     graphEnd = node(endNode.getName()).with(Records.of(makeNodes(endNode, inTag)));
                 }
-                ArrayList<LinkSource> arrayList = getLinks(endNode, inTag + i, graphEnd, seen);
-                if (arrayList == null){
+                ArrayList<LinkSource> arrayList = getLinksV2(endNode, inTag + i, graphEnd, seen);
+                if (arrayList == null) {
                     links[i] = (between(port(inTag + i), graphEnd.port(inTag, EAST)));
-                }else {
+                } else {
                     targets.addAll(arrayList);
                     links[i] = (between(port(inTag + i), graphEnd.port(inTag, WEST)));
                 }
@@ -115,6 +113,51 @@ public class NFA {
             nodes[i + 1] = rec(inTag + i, transition.getExpression().getSequence());
         }
         return nodes;
+    }
+
+    public void drawPngV2(Node start, String fileName) {
+        Graph g = graph("tempGraph").directed().graphAttr().with(RankDir.LEFT_TO_RIGHT).with(getLinksV2(start, new ArrayList<>()));
+        try {
+            Graphviz.fromGraph(g).width(2000).render(Format.PNG).toFile(new File("example/" + fileName + ".png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private ArrayList<LinkSource> getLinksV2(Node startNode, ArrayList<Node> seen) {
+        ArrayList<LinkSource> linkSources = new ArrayList<>();
+        if (seen.contains(startNode)) {
+            return linkSources;
+        }
+        guru.nidi.graphviz.model.Node graphStart = null;
+        switch (startNode.getKind()) {
+            case first:
+                graphStart = node(startNode.getName()).with(Color.GREEN);
+                break;
+            case terminal:
+                graphStart = node(startNode.getName()).with(Color.BLUE);
+                break;
+            case normal:
+                graphStart = node(startNode.getName()).with(Color.BLACK);
+                break;
+            case trap:
+                graphStart = node(startNode.getName()).with(Color.RED);
+                break;
+        }
+        seen.add(startNode);
+
+        ArrayList<Transition> transitions = startNode.getTransitions();
+        LinkTarget[] targets = new LinkTarget[transitions.size()];
+        for (int i = 0, transitionsSize = transitions.size(); i < transitionsSize; i++) {
+            Transition transition = transitions.get(i);
+            guru.nidi.graphviz.model.Node target = node(transition.getEnd().getName());
+            targets[i] = (to(target).with(Style.SOLID, Label.of(transition.getExpression().getSequence()), Color.BLACK));
+        }
+        linkSources.add(graphStart.link(targets));
+        for (Transition transition : startNode.getTransitions()) {
+            linkSources.addAll(getLinksV2(transition.getEnd(), seen));
+        }
+        return linkSources;
     }
 
     private ArrayList<Transition> getAllTransitions(Node node, ArrayList<Node> seen) {
