@@ -1,20 +1,23 @@
 package NFA;
 
 import NFA.transition.Transition;
+import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.RankDir;
 import guru.nidi.graphviz.attribute.Records;
+import guru.nidi.graphviz.attribute.Style;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.model.Graph;
-import guru.nidi.graphviz.model.Link;
 import guru.nidi.graphviz.model.LinkSource;
 import guru.nidi.graphviz.model.LinkTarget;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static guru.nidi.graphviz.attribute.Records.rec;
 import static guru.nidi.graphviz.attribute.Records.turn;
+import static guru.nidi.graphviz.model.Compass.EAST;
 import static guru.nidi.graphviz.model.Compass.WEST;
 import static guru.nidi.graphviz.model.Factory.*;
 
@@ -36,7 +39,7 @@ public class NFA {
         tempStart.addTransition(new Transition(tempStart, tempEnd, new Expression(sequence)));
         tempEnd.addTransition(new Transition(tempEnd, finalNode, new Expression("y")));
 
-        tempStart.simplify();
+        tempStart.simplify(new ArrayList<>());
 
     }
 
@@ -49,40 +52,51 @@ public class NFA {
 //            }
 //        }
         if (start != null && !start.getTransitions().isEmpty()) {
-            ArrayList<Transition> transitions = getAllTransitions(start);
+            ArrayList<Transition> transitions = getAllTransitions(start, new ArrayList<>());
             for (Transition transition : transitions)
                 System.out.println(transition.toString());
         }
     }
 
-    public void drawPNG(Node start,String fileName) {
+    public void drawPNG(Node start, String fileName) {
         try {
 
             guru.nidi.graphviz.model.Node graphStart = node(start.getName()).with(Records.of(rec("start", startNode.getName()),
-                    turn(rec("tag0", start.getTransitions().get(0).getExpression().getSequence()))));
+                    turn(rec("tag0", start.getTransitions().get(0).getExpression().getSequence()))), Style.FILLED, Color.hsv(.7, .3, 1.0));
 //            g.with(getLinks(start, "tag0", graphStart));
             Graph g = graph("tempGraph").directed()
-                    .graphAttr().with(RankDir.LEFT_TO_RIGHT).with(getLinks(start, "tag0", graphStart));
+                    .graphAttr().with(RankDir.LEFT_TO_RIGHT).with(Objects.requireNonNull(getLinks(start, "tag0", graphStart, new ArrayList<>())));
 
-            Graphviz.fromGraph(g).width(5000).render(Format.PNG).toFile(new File("example/"+fileName+".png"));
+            Graphviz.fromGraph(g).width(5000).render(Format.PNG).toFile(new File("example/" + fileName + ".png"));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private ArrayList<LinkSource> getLinks(Node startNode, String inTag, guru.nidi.graphviz.model.Node graphStart) {
+    private ArrayList<LinkSource> getLinks(Node startNode, String inTag, guru.nidi.graphviz.model.Node graphStart, ArrayList<Node> seen) {
         ArrayList<LinkSource> targets = new ArrayList<>();
+        if (seen.contains(startNode)){
+            return null;
+        }
         try {
+            seen.add(startNode);
             int i = 0;
             LinkTarget[] links = new LinkTarget[startNode.getTransitions().size()];
             for (Transition transition : startNode.getTransitions()) {
                 Node endNode = transition.getEnd();
-
-                guru.nidi.graphviz.model.Node graphEnd = node(endNode.getName()).with(Records.of(makeNodes(endNode, inTag)));
-
-                links[i] = (between(port(inTag + i), graphEnd.port(inTag, WEST)));
-
-                targets.addAll(getLinks(endNode, inTag + i, graphEnd));
+                guru.nidi.graphviz.model.Node graphEnd;
+                if (endNode.getKind() == NodeKind.terminal){
+                    graphEnd = node(endNode.getName()).with(Records.of(makeNodes(endNode, inTag)),Style.SOLID, Color.rgb("10d020"));
+                }else {
+                    graphEnd = node(endNode.getName()).with(Records.of(makeNodes(endNode, inTag)));
+                }
+                ArrayList<LinkSource> arrayList = getLinks(endNode, inTag + i, graphEnd, seen);
+                if (arrayList == null){
+                    links[i] = (between(port(inTag + i), graphEnd.port(inTag, EAST)));
+                }else {
+                    targets.addAll(arrayList);
+                    links[i] = (between(port(inTag + i), graphEnd.port(inTag, WEST)));
+                }
                 i++;
             }
             targets.add(graphStart.link(links));
@@ -103,11 +117,15 @@ public class NFA {
         return nodes;
     }
 
-    private ArrayList<Transition> getAllTransitions(Node node) {
+    private ArrayList<Transition> getAllTransitions(Node node, ArrayList<Node> seen) {
+        if (seen.contains(node)) {
+            return new ArrayList<>();
+        }
+        seen.add(node);
         ArrayList<Transition> transitionArrayList = new ArrayList<>();
         for (Transition transition : node.getTransitions()) {
             transitionArrayList.add(transition);
-            ArrayList<Transition> t = getAllTransitions(transition.getEnd());
+            ArrayList<Transition> t = getAllTransitions(transition.getEnd(), seen);
             for (Transition temp : t)
                 if (!transitionArrayList.contains(temp))
                     transitionArrayList.add(temp);

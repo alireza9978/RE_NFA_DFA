@@ -55,8 +55,8 @@ public class Node {
                 '}';
     }
 
-    public void simplify() {
-        if (transitions.isEmpty()) {
+    public void simplify(ArrayList<Node> seen) {
+        if (transitions.isEmpty() || seen.contains(this)) {
             return;
         }
         boolean canReDo = false;
@@ -69,16 +69,17 @@ public class Node {
             if (temp != null) {
                 transitions.addAll(temp);
                 canReDo = true;
-            }else{
+            } else {
                 transitions.add(transition);
             }
         }
         this.transitions = transitions;
-        if (canReDo){
-            simplify();
+        if (canReDo) {
+            simplify(seen);
         }
+        seen.add(this);
         for (Transition transition : getTransitions()) {
-            transition.getEnd().simplify();
+            transition.getEnd().simplify(seen);
         }
     }
 

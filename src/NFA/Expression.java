@@ -65,7 +65,6 @@ public class Expression {
             return new Data(null, null, null);
         } else {
             String tempSequence = preParse(sequence);
-            System.out.println(tempSequence);
             if (tempSequence.length() == 1) {
                 String temp = removeParentheses(sequence);
                 return parseSequence(temp);
@@ -76,7 +75,8 @@ public class Expression {
             if (temp == 'a' || temp == 'b') {
                 if (next == 'p') {
                     return new Data("" + temp, sequence.substring(1), Opration.concat);
-                } else {
+                }
+                else {
                     if (next == 'a' || next == 'b') {
                         for (int k = i + 2; k < tempSequence.length(); k++) {
                             if (tempSequence.charAt(k) == 'p' || tempSequence.charAt(k) == '|') {
@@ -99,7 +99,8 @@ public class Expression {
                         return new Data("" + temp, sequence.substring(2), opration);
                     }
                 }
-            } else {
+            }
+            else {
                 if (temp == 'p') {
                     int j = getEndOfParantes(sequence, i);
                     String first = sequence.substring(1, j);

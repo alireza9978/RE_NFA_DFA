@@ -48,9 +48,15 @@ public class Transition {
                 case star: {
                     StarTransition star = new StarTransition(start, end, expression.getFirstSequencePart());
                     Node tempEnd = new Node(NodeKind.normal);
-                    Expression tempEx = new Expression(expression.getSecondSequencePart());
-                    Transition tempAdd = new Transition(end, tempEnd, tempEx);
-                    end.addTransition(tempAdd);
+
+                    String temp = expression.getSecondSequencePart();
+                    Expression tempEx;
+                    if (!temp.isEmpty()) {
+                        tempEx = new Expression(temp);
+                        Transition tempAdd = new Transition(end, tempEnd, tempEx);
+                        end.addTransition(tempAdd);
+                    }
+
                     return star.getFirstStepTransition();
                 }
             }

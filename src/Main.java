@@ -11,7 +11,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        String input = "a|b";
+        String input = "a|b*";
         System.out.println("nfa for " + input);
         NFA nfa = new NFA(input);
         nfa.draw(nfa.getStartNode());
