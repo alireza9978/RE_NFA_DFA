@@ -46,15 +46,15 @@ public class Transition {
                     return (new OrTransition(start, end, expression.getFirstSequencePart(), expression.getSecondSequencePart())).getFirstStepTransition();
                 }
                 case star: {
-                    StarTransition star = new StarTransition(start, end, expression.getFirstSequencePart());
                     Node tempEnd = new Node(NodeKind.normal);
+                    StarTransition star = new StarTransition(start, tempEnd, expression.getFirstSequencePart());
 
                     String temp = expression.getSecondSequencePart();
                     Expression tempEx;
                     if (!temp.isEmpty()) {
                         tempEx = new Expression(temp);
-                        Transition tempAdd = new Transition(end, tempEnd, tempEx);
-                        end.addTransition(tempAdd);
+                        Transition tempAdd = new Transition(tempEnd, end, tempEx);
+                        tempEnd.addTransition(tempAdd);
                     }
 
                     return star.getFirstStepTransition();

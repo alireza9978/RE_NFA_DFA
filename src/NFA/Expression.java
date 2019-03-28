@@ -75,8 +75,7 @@ public class Expression {
             if (temp == 'a' || temp == 'b') {
                 if (next == 'p') {
                     return new Data("" + temp, sequence.substring(1), Opration.concat);
-                }
-                else {
+                } else {
                     if (next == 'a' || next == 'b') {
                         for (int k = i + 2; k < tempSequence.length(); k++) {
                             if (tempSequence.charAt(k) == 'p' || tempSequence.charAt(k) == '|') {
@@ -99,8 +98,7 @@ public class Expression {
                         return new Data("" + temp, sequence.substring(2), opration);
                     }
                 }
-            }
-            else {
+            } else {
                 if (temp == 'p') {
                     int j = getEndOfParantes(sequence, i);
                     String first = sequence.substring(1, j);
@@ -122,18 +120,18 @@ public class Expression {
         int j = i + 1;
         int count = 1;
         char tempChar = sequence.charAt(j);
-        while (tempChar != ')' && count == 1) {
+        while (true) {
             if (tempChar == '(') {
                 count++;
             }
-            if (tempChar == '(') {
+            if (tempChar == ')') {
                 count--;
             }
-            j++;
-            if (sequence.length() > j)
-                tempChar = sequence.charAt(j);
-            else
+            if (count == 0) {
                 break;
+            }
+            j++;
+            tempChar = sequence.charAt(j);
         }
         return j;
     }
