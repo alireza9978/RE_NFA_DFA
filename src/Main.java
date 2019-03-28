@@ -1,3 +1,4 @@
+import DFA.DFA;
 import NFA.NFA;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
@@ -11,12 +12,15 @@ public class Main {
 
     public static void main(String[] args) {
 
-        String input = "(ab|ba)*(bb|(a|b))";
+        String input = "(a|bb)aa";
         System.out.println("nfa for " + input);
         NFA nfa = new NFA(input);
-        nfa.draw(nfa.getStartNode());
+        nfa.drawPngV2(nfa.getStartNode(),"testDfa");
+        DFA dfa = new DFA(nfa);
+
+//        nfa.draw(nfa.getStartNode());
 //        nfa.drawPNG(nfa.getStartNode(),"one");
-        nfa.drawPngV2(nfa.getStartNode(),"oneV");
+//        nfa.drawPngV2(nfa.getStartNode(),"oneV");
 //
 //        input = "(aa|bb)a";
 //        System.out.println("nfa for " + input);
