@@ -64,7 +64,6 @@ public class Expression {
         if (sequence.length() == 1) {
             return new Data(null, null, null);
         } else {
-            System.out.println(sequence);
             String tempSequence = preParse(sequence);
             System.out.println(tempSequence);
             if (tempSequence.length() == 1) {
@@ -75,11 +74,30 @@ public class Expression {
             char temp = tempSequence.charAt(i);
             char next = tempSequence.charAt(i + 1);
             if (temp == 'a' || temp == 'b') {
-                if (next == 'a' || next == 'b' || next == 'p') {
+                if (next == 'p') {
                     return new Data("" + temp, sequence.substring(1), Opration.concat);
                 } else {
-                    Opration opration = (next == '|') ? Opration.or : Opration.star;
-                    return new Data("" + temp, sequence.substring(2), opration);
+                    if (next == 'a' || next == 'b') {
+                        for (int k = i + 2; k < tempSequence.length(); k++) {
+                            if (tempSequence.charAt(k) == 'p' || tempSequence.charAt(k) == '|') {
+                                if (tempSequence.charAt(k) == 'p') {
+                                    String firstPart = sequence.substring(0, k);
+                                    String secondPart = sequence.substring(k + 1);
+                                    return new Data(firstPart, secondPart, Opration.concat);
+                                }
+                                if (tempSequence.charAt(k) == '|') {
+                                    String firstPart = sequence.substring(0, k);
+                                    String secondPart = sequence.substring(k + 1);
+                                    return new Data(firstPart, secondPart, Opration.or);
+                                }
+                                break;
+                            }
+                        }
+                        return new Data("" + temp, sequence.substring(1), Opration.concat);
+                    } else {
+                        Opration opration = (next == '|') ? Opration.or : Opration.star;
+                        return new Data("" + temp, sequence.substring(2), opration);
+                    }
                 }
             } else {
                 if (temp == 'p') {
