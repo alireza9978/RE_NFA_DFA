@@ -28,8 +28,20 @@ public class Expression {
         if (sequence.length() == 1) {
             return sequence;
         } else {
-            if (sequence.charAt(0) == '(' && sequence.charAt(sequence.length() - 1) == ')') {
-                return removeParentheses(sequence.substring(1, sequence.length() - 1));
+            if (sequence.charAt(0) == '(') {
+                int count = 1;
+                for (int i = 1; i < sequence.length() - 1; i++) {
+                    if (sequence.charAt(i) == '(')
+                        count++;
+                    if (sequence.charAt(i) == ')')
+                        count--;
+                    if (count == 0) {
+                        return sequence;
+                    }
+                }
+                if (sequence.charAt(sequence.length() - 1) == ')' && count == 1) {
+                    return removeParentheses(sequence.substring(1, sequence.length() - 1));
+                }
             }
         }
         return sequence;
@@ -52,7 +64,9 @@ public class Expression {
         if (sequence.length() == 1) {
             return new Data(null, null, null);
         } else {
+            System.out.println(sequence);
             String tempSequence = preParse(sequence);
+            System.out.println(tempSequence);
             if (tempSequence.length() == 1) {
                 String temp = removeParentheses(sequence);
                 return parseSequence(temp);
@@ -102,7 +116,7 @@ public class Expression {
             else
                 break;
         }
-        return j + 1;
+        return j;
     }
 
     public Opration getOpration() {
