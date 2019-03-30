@@ -50,11 +50,9 @@ public class DFA {
         nodes = equalNodes(nfa.getAllTransitions(nfa.getStartNode(), new ArrayList<>()));
         connectTrap(nodes);
         nodes.add(trap);
-        showEqualNode(nodes);
-        showMainTransition(nodes);
     }
 
-    public void draw(DFANode start, String fileName) {
+    public void drawPNG(DFANode start, String fileName) {
         Graph g = graph("tempGraph").directed().graphAttr().with(RankDir.LEFT_TO_RIGHT).with(getLinks(start, new ArrayList<>()));
         try {
             Graphviz.fromGraph(g).width(2000).render(Format.PNG).toFile(new File("example/" + fileName + ".png"));
@@ -63,25 +61,21 @@ public class DFA {
         }
     }
 
+    public void draw() {
+        showEqualNode(nodes);
+        showMainTransition(nodes);
+    }
+
     private ArrayList<LinkSource> getLinks(DFANode startNode, ArrayList<DFANode> seen) {
         ArrayList<LinkSource> linkSources = new ArrayList<>();
         if (seen.contains(startNode)) {
             return linkSources;
         }
         guru.nidi.graphviz.model.Node graphStart = null;
-        switch (startNode.getKind()) {
-            case first:
-                graphStart = node(startNode.getName()).with(Color.GREEN);
-                break;
-            case terminal:
-                graphStart = node(startNode.getName()).with(Color.BLUE);
-                break;
-            case normal:
-                graphStart = node(startNode.getName()).with(Color.BLACK);
-                break;
-            case trap:
-                graphStart = node(startNode.getName()).with(Color.RED);
-                break;
+        if ((nodes.size() == 2 && nodes.contains(trap)) || (nodes.size() == 1 && !nodes.contains(trap))) {
+            graphStart = node(startNode.getName()).with(Color.BROWN);
+        } else {
+            graphStart = DFANode.makeGraphNode(startNode);
         }
         seen.add(startNode);
 

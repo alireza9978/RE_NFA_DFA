@@ -11,10 +11,10 @@ public class Expression {
 
     public Expression(String sequence) {
         this.sequence = removeParentheses(sequence);
-        Data temp = parseSequence(sequence);
-        if (sequence.length() == 1) {
+        Data temp = parseSequence(this.sequence);
+        if (this.sequence.length() == 1) {
             isFinal = true;
-            finalExpressionKind = FinalExpressionKind.getKind(sequence);
+            finalExpressionKind = FinalExpressionKind.getKind(this.sequence);
         } else {
             isFinal = false;
             finalExpressionKind = FinalExpressionKind.none;
@@ -136,7 +136,7 @@ public class Expression {
         return j;
     }
 
-    public Opration getOpration() {
+    public Opration getOperation() {
         return opration;
     }
 

@@ -1,5 +1,6 @@
 package NFA;
 
+import DFA.DFANode;
 import NFA.transition.Transition;
 import guru.nidi.graphviz.attribute.*;
 import guru.nidi.graphviz.engine.Format;
@@ -32,7 +33,7 @@ public class NFA {
         Node tempStart = new Node("tempStart", NodeKind.normal);
         Node tempEnd = new Node("tempEnd", NodeKind.normal);
 
-        //initial starting NFA.NFA
+        //initial starting NFA
         startNode.addTransition(new Transition(startNode, tempStart, new Expression("y")));
         tempStart.addTransition(new Transition(tempStart, tempEnd, new Expression(sequence)));
         tempEnd.addTransition(new Transition(tempEnd, finalNode, new Expression("y")));
@@ -129,21 +130,7 @@ public class NFA {
         if (seen.contains(startNode)) {
             return linkSources;
         }
-        guru.nidi.graphviz.model.Node graphStart = null;
-        switch (startNode.getKind()) {
-            case first:
-                graphStart = node(startNode.getName()).with(Color.GREEN);
-                break;
-            case terminal:
-                graphStart = node(startNode.getName()).with(Color.BLUE);
-                break;
-            case normal:
-                graphStart = node(startNode.getName()).with(Color.BLACK);
-                break;
-            case trap:
-                graphStart = node(startNode.getName()).with(Color.RED);
-                break;
-        }
+        guru.nidi.graphviz.model.Node graphStart = DFANode.makeGraphNode(startNode);
         seen.add(startNode);
 
         ArrayList<Transition> transitions = startNode.getTransitions();

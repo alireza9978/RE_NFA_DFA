@@ -3,8 +3,11 @@ package DFA;
 import NFA.Node;
 import NFA.NodeKind;
 import NFA.transition.Transition;
+import guru.nidi.graphviz.attribute.Color;
 
 import java.util.ArrayList;
+
+import static guru.nidi.graphviz.model.Factory.node;
 
 public class DFANode {
 
@@ -90,4 +93,27 @@ public class DFANode {
         }
         return name;
     }
+
+    public static guru.nidi.graphviz.model.Node makeGraphNode(DFANode startNode) {
+        return getNode(startNode.getKind(), startNode.getName());
+    }
+
+    public static guru.nidi.graphviz.model.Node makeGraphNode(Node startNode) {
+        return getNode(startNode.getKind(), startNode.getName());
+    }
+
+    public static guru.nidi.graphviz.model.Node getNode(NodeKind kind, String name) {
+        switch (kind) {
+            case first:
+                return node(name).with(Color.GREEN);
+            case terminal:
+                return node(name).with(Color.BLUE);
+            case normal:
+                return node(name).with(Color.BLACK);
+            case trap:
+                return node(name).with(Color.RED);
+        }
+        return null;
+    }
+
 }

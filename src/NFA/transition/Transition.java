@@ -38,7 +38,7 @@ public class Transition {
         if (expression.isFinal()) {
             return null;
         } else {
-            switch (expression.getOpration()) {
+            switch (expression.getOperation()) {
                 case concat: {
                     return (new AndTransition(start, end, expression.getFirstSequencePart(), expression.getSecondSequencePart())).getFirstStepTransition();
                 }
