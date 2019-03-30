@@ -160,7 +160,7 @@ public class NFA {
         return linkSources;
     }
 
-    private ArrayList<Transition> getAllTransitions(Node node, ArrayList<Node> seen) {
+    public ArrayList<Transition> getAllTransitions(Node node, ArrayList<Node> seen) {
         if (seen.contains(node)) {
             return new ArrayList<>();
         }

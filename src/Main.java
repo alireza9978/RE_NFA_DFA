@@ -1,12 +1,5 @@
 import DFA.DFA;
 import NFA.NFA;
-import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultDirectedGraph;
-import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.SimpleGraph;
-
-import java.net.URI;
-import java.net.URISyntaxException;
 
 public class Main {
 
@@ -15,8 +8,9 @@ public class Main {
         String input = "(a|bb)aa";
         System.out.println("nfa for " + input);
         NFA nfa = new NFA(input);
-        nfa.drawPngV2(nfa.getStartNode(),"testDfa");
+//        nfa.drawPngV2(nfa.getStartNode(),"testDfa");
         DFA dfa = new DFA(nfa);
+        dfa.draw(dfa.getStart(), "testDFAEnd");
 
 //        nfa.draw(nfa.getStartNode());
 //        nfa.drawPNG(nfa.getStartNode(),"one");
