@@ -5,7 +5,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        String input = "abb*";
+        String input = "aab*";
         NFA nfa = new NFA(input);
         DFA dfa = new DFA(nfa);
         nfa.draw(nfa.getStartNode());

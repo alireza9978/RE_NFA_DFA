@@ -55,6 +55,10 @@ public class Transition {
                         tempEx = new Expression(temp);
                         Transition tempAdd = new Transition(tempEnd, end, tempEx);
                         tempEnd.addTransition(tempAdd);
+                    } else {
+                        tempEx = new Expression("y");
+                        Transition tempAdd = new Transition(tempEnd, end, tempEx);
+                        tempEnd.addTransition(tempAdd);
                     }
 
                     return star.getFirstStepTransition();

@@ -50,6 +50,7 @@ public class DFA {
         nodes = equalNodes(nfa.getAllTransitions(nfa.getStartNode(), new ArrayList<>()));
         connectTrap(nodes);
         nodes.add(trap);
+        //todo have problem with star
     }
 
     public void drawPNG(DFANode start, String fileName) {
