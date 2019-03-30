@@ -50,7 +50,6 @@ public class DFA {
         nodes = equalNodes(nfa.getAllTransitions(nfa.getStartNode(), new ArrayList<>()));
         connectTrap(nodes);
         nodes.add(trap);
-        //todo have problem with star
     }
 
     public void drawPNG(DFANode start, String fileName) {
@@ -72,7 +71,7 @@ public class DFA {
         if (seen.contains(startNode)) {
             return linkSources;
         }
-        guru.nidi.graphviz.model.Node graphStart = null;
+        guru.nidi.graphviz.model.Node graphStart;
         if ((nodes.size() == 2 && nodes.contains(trap)) || (nodes.size() == 1 && !nodes.contains(trap))) {
             graphStart = node(startNode.getName()).with(Color.BROWN);
         } else {
@@ -98,7 +97,7 @@ public class DFA {
         ArrayList<DFANode> dfaNodes = new ArrayList<>();
         for (Transition transition : transitions) {
             boolean find = false;
-            DFANode tempNode = null, secondTepmNode = null;
+            DFANode tempNode = null, secondTempNode = null;
             boolean needRemove = false;
             if (transition.getExpression().getFinalExpressionKind() == FinalExpressionKind.lambda) {
                 for (DFANode node : dfaNodes) {
@@ -111,8 +110,12 @@ public class DFA {
                                 tempNode = node;
                             } else {
                                 needRemove = true;
-                                secondTepmNode = node;
+                                secondTempNode = node;
                             }
+                        } else {
+                            node.getTransitions().add(transition);
+                            find = true;
+                            break;
                         }
                     } else {
                         if (node.getNodes().contains(transition.getEnd())) {
@@ -123,7 +126,7 @@ public class DFA {
                                     find = true;
                                     tempNode = node;
                                 } else {
-                                    secondTepmNode = node;
+                                    secondTempNode = node;
                                     needRemove = true;
                                 }
                             }
@@ -133,16 +136,16 @@ public class DFA {
                 if (find) {
                     if (needRemove) {
                         ArrayList<Node> nodes = new ArrayList<>(tempNode.getNodes());
-                        for (Node temp : secondTepmNode.getNodes()) {
+                        for (Node temp : secondTempNode.getNodes()) {
                             if (!nodes.contains(temp))
                                 nodes.add(temp);
                         }
                         ArrayList<Transition> newTransitions = new ArrayList<>();
                         newTransitions.addAll(tempNode.getTransitions());
-                        newTransitions.addAll(secondTepmNode.getTransitions());
+                        newTransitions.addAll(secondTempNode.getTransitions());
                         dfaNodes.add(new DFANode(nodes, newTransitions));
                         dfaNodes.remove(tempNode);
-                        dfaNodes.remove(secondTepmNode);
+                        dfaNodes.remove(secondTempNode);
                     }
                 } else {
                     ArrayList<Node> nodes = new ArrayList<>();
@@ -247,17 +250,6 @@ public class DFA {
             }
         }
         return null;
-    }
-
-    private void getNodes(Node start, ArrayList<Node> nodes) {
-        if (nodes.contains(start)) {
-            return;
-        }
-        nodes.add(start);
-        for (Transition transition : start.getTransitions()) {
-            Node end = transition.getEnd();
-            getNodes(end, nodes);
-        }
     }
 
     private void showEqualNode(ArrayList<DFANode> nodes) {

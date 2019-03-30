@@ -7,7 +7,7 @@ public class Expression {
     private final FinalExpressionKind finalExpressionKind;
     private final String firstSequencePart;
     private final String secondSequencePart;
-    private final Opration opration;
+    private final Operation operation;
 
     public Expression(String sequence) {
         this.sequence = removeParentheses(sequence);
@@ -21,7 +21,7 @@ public class Expression {
         }
         firstSequencePart = temp.first;
         secondSequencePart = temp.second;
-        opration = temp.opration;
+        operation = temp.operation;
     }
 
     private String removeParentheses(String sequence) {
@@ -74,7 +74,7 @@ public class Expression {
             char next = tempSequence.charAt(i + 1);
             if (temp == 'a' || temp == 'b') {
                 if (next == 'p') {
-                    return new Data("" + temp, sequence.substring(1), Opration.concat);
+                    return new Data("" + temp, sequence.substring(1), Operation.concat);
                 } else {
                     if (next == 'a' || next == 'b') {
                         for (int k = i + 2; k < tempSequence.length(); k++) {
@@ -82,20 +82,20 @@ public class Expression {
                                 if (tempSequence.charAt(k) == 'p') {
                                     String firstPart = sequence.substring(0, k);
                                     String secondPart = sequence.substring(k + 1);
-                                    return new Data(firstPart, secondPart, Opration.concat);
+                                    return new Data(firstPart, secondPart, Operation.concat);
                                 }
                                 if (tempSequence.charAt(k) == '|') {
                                     String firstPart = sequence.substring(0, k);
                                     String secondPart = sequence.substring(k + 1);
-                                    return new Data(firstPart, secondPart, Opration.or);
+                                    return new Data(firstPart, secondPart, Operation.or);
                                 }
                                 break;
                             }
                         }
-                        return new Data("" + temp, sequence.substring(1), Opration.concat);
+                        return new Data("" + temp, sequence.substring(1), Operation.concat);
                     } else {
-                        Opration opration = (next == '|') ? Opration.or : Opration.star;
-                        return new Data("" + temp, sequence.substring(2), opration);
+                        Operation operation = (next == '|') ? Operation.or : Operation.star;
+                        return new Data("" + temp, sequence.substring(2), operation);
                     }
                 }
             } else {
@@ -104,10 +104,10 @@ public class Expression {
                     String first = sequence.substring(1, j);
                     char need = sequence.charAt(j + 1);
                     if (need == 'a' || need == 'b' || need == '(') {
-                        return new Data(first, sequence.substring(j + 1), Opration.concat);
+                        return new Data(first, sequence.substring(j + 1), Operation.concat);
                     } else {
-                        Opration opration = (next == '|') ? Opration.or : Opration.star;
-                        return new Data(first, sequence.substring(j + 2), opration);
+                        Operation operation = (next == '|') ? Operation.or : Operation.star;
+                        return new Data(first, sequence.substring(j + 2), operation);
                     }
                 } else {
                     throw new RuntimeException("ridi ke");
@@ -136,8 +136,8 @@ public class Expression {
         return j;
     }
 
-    public Opration getOperation() {
-        return opration;
+    public Operation getOperation() {
+        return operation;
     }
 
     public String getFirstSequencePart() {
@@ -163,12 +163,12 @@ public class Expression {
     private class Data {
         String first;
         String second;
-        Opration opration;
+        Operation operation;
 
-        public Data(String first, String second, Opration opration) {
+        public Data(String first, String second, Operation operation) {
             this.first = first;
             this.second = second;
-            this.opration = opration;
+            this.operation = operation;
         }
     }
 

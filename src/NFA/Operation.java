@@ -1,6 +1,6 @@
 package NFA;
 
-public enum Opration {
+public enum Operation {
 
     concat,or,star
 

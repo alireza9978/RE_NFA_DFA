@@ -14,19 +14,23 @@ public class Main {
         dfa.draw();
         dfa.drawPNG(dfa.getStart(), "aDFA");
 
-//        input = "(aa|bb)";
-//        nfa = new NFA(input);
-//        dfa = new DFA(nfa);
-//        nfa.draw(nfa.getStartNode());
-//        nfa.drawPngV2(nfa.getStartNode(), "bNFA");
-//        dfa.draw(dfa.getStart(), "bDFA");
-//
-//        input = "(abba|baab)a*(b)";
-//        nfa = new NFA(input);
-//        dfa = new DFA(nfa);
-//        nfa.draw(nfa.getStartNode());
-//        nfa.drawPngV2(nfa.getStartNode(), "cNFA");
-//        dfa.draw(dfa.getStart(), "cDFA");
+        input = "(aa|bb)";
+        nfa = new NFA(input);
+        dfa = new DFA(nfa);
+        nfa.draw(nfa.getStartNode());
+        nfa.drawPngV2(nfa.getStartNode(), "bNFA");
+        System.out.println("  ");
+        dfa.draw();
+        dfa.drawPNG(dfa.getStart(), "bDFA");
+
+        input = "(abba|baab)a*(b)";
+        nfa = new NFA(input);
+        dfa = new DFA(nfa);
+        nfa.draw(nfa.getStartNode());
+        nfa.drawPngV2(nfa.getStartNode(), "cNFA");
+        System.out.println("  ");
+        dfa.draw();
+        dfa.drawPNG(dfa.getStart(), "cDFA");
     }
 
 }
