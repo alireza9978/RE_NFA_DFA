@@ -28,6 +28,7 @@ public class DFA {
 
     public DFA(NFA nfa) {
         this.nfa = nfa;
+        DFANode.reset();
         trap = new DFANode(new ArrayList<>(), new ArrayList<>());
         trap.getMainTransitions().add(new DFATransition(trap, trap, FinalExpressionKind.a));
         trap.getMainTransitions().add(new DFATransition(trap, trap, FinalExpressionKind.b));
@@ -253,23 +254,34 @@ public class DFA {
     }
 
     private void showEqualNode(ArrayList<DFANode> nodes) {
+        System.out.println("DFA states are : ");
         for (DFANode node : nodes) {
-            ArrayList<Node> nfaNodes = node.getNodes();
-            System.out.print(node.getName() + " : ");
-            for (Node temp : nfaNodes) {
-                System.out.print(temp.getName());
-                System.out.print(" ");
+//            ArrayList<Node> nfaNodes = node.getNodes();
+            System.out.print(node.getName());
+//            for (Node temp : nfaNodes) {
+//                System.out.print(temp.getName());
+//                System.out.print(" ");
+//            }
+            if (node.isStart()) {
+                System.out.print(" (start) ");
             }
-            System.out.println();
+            if (node.isFinal()) {
+                System.out.print(" (final) ");
+            }
+            if (node.isTrap()) {
+                System.out.print(" (trap) ");
+            }
+            System.out.print(" , ");
         }
+        System.out.println(" ");
     }
 
     private void showMainTransition(ArrayList<DFANode> nodes) {
         for (DFANode node : nodes) {
             for (DFATransition temp : node.getMainTransitions()) {
                 System.out.print(temp.toString());
-                for (Node n : temp.getEnd().getNodes())
-                    System.out.print(" " + n.getName());
+//                for (Node n : temp.getEnd().getNodes())
+//                    System.out.print(" " + n.getName());
                 System.out.println(" ");
             }
         }

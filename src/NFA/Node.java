@@ -83,4 +83,9 @@ public class Node {
         }
     }
 
+    public static void reset() {
+        count = 0;
+    }
+
+
 }

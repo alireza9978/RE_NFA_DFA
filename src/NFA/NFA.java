@@ -28,6 +28,7 @@ public class NFA {
 
     public NFA(String sequence) {
         this.sequence = sequence;
+        Node.reset();
         this.startNode = new Node("start", NodeKind.first);
         this.finalNode = new Node("end", NodeKind.terminal);
         Node tempStart = new Node("tempStart", NodeKind.normal);
@@ -50,11 +51,43 @@ public class NFA {
 //                draw(end);
 //            }
 //        }
+        System.out.println(sequence);
+        System.out.println("states: ");
+        ArrayList<Node> nodes = getNodes(start, new ArrayList<>());
+        assert nodes != null;
+        for (Node node : nodes) {
+            System.out.print(node.getName());
+            if (node.getKind() == NodeKind.first) {
+                System.out.print(" (start) ");
+            }
+            if (node.getKind() == NodeKind.terminal) {
+                System.out.print(" (final) ");
+            }
+            System.out.print(" , ");
+        }
+        System.out.println("");
+        System.out.println("transitions:");
         if (start != null && !start.getTransitions().isEmpty()) {
             ArrayList<Transition> transitions = getAllTransitions(start, new ArrayList<>());
             for (Transition transition : transitions)
                 System.out.println(transition.toString());
         }
+    }
+
+    private ArrayList<Node> getNodes(Node startNode, ArrayList<Node> seen) {
+        ArrayList<Node> nodes = new ArrayList<>();
+        if (seen.contains(startNode)) {
+            return null;
+        }
+        seen.add(startNode);
+        nodes.add(startNode);
+        for (Transition transition : startNode.getTransitions()) {
+            ArrayList<Node> temp = getNodes(transition.getEnd(), seen);
+            if (temp != null) {
+                nodes.addAll(temp);
+            }
+        }
+        return nodes;
     }
 
     public void drawPNG(Node start, String fileName) {

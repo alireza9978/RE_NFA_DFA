@@ -12,7 +12,7 @@ import static guru.nidi.graphviz.model.Factory.node;
 public class DFANode {
 
     private static int count = 0;
-    private final String name = "DFA Node " + count++;
+    private final String name = "Node " + count++;
     private ArrayList<Node> nodes;
     private ArrayList<Transition> transitions;
     private ArrayList<DFATransition> mainTransitions = new ArrayList<>();
@@ -114,6 +114,10 @@ public class DFANode {
                 return node(name).with(Color.RED);
         }
         return null;
+    }
+
+    public static void reset() {
+        count = 0;
     }
 
 }
